@@ -25,15 +25,21 @@
         <!-- タイトル -->
         <div class="flex flex-col">
             <label class="mb-2 font-semibold">タイトル</label>
-            <input type="text" name="title"
+            <input type="text" name="title" value="{{ old('title') }}"
                    class="p-3 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            @error('title')
+                <p class="text-red-500 mt-1">{{ $message }}</p>
+            @enderror
         </div>
 
         <!-- 本文 -->
         <div class="flex flex-col">
             <label class="mb-2 font-semibold">本文</label>
             <textarea name="body" rows="5"
-                      class="p-3 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                      class="p-3 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">{{ old('body') }}</textarea>
+            @error('body')
+                <p class="text-red-500 mt-1">{{ $message }}</p>
+            @enderror
         </div>
 
         <!-- タグ選択 -->
@@ -42,11 +48,19 @@
             <div class="flex flex-wrap gap-3">
                 @foreach ($tags as $tag)
                     <label class="flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/30 hover:bg-indigo-500/50 cursor-pointer transition-all duration-300">
-                        <input type="checkbox" name="tags[]" value="{{ $tag->id }}" class="accent-indigo-400">
+                        <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
+                               class="accent-indigo-400"
+                               {{ in_array($tag->id, old('tags', [])) ? 'checked' : '' }}>
                         <span>{{ $tag->name }}</span>
                     </label>
                 @endforeach
             </div>
+            @error('tags')
+                <p class="text-red-500 mt-1">{{ $message }}</p>
+            @enderror
+            @error('tags.*')
+                <p class="text-red-500 mt-1">{{ $message }}</p>
+            @enderror
         </div>
 
         <!-- 送信ボタン -->

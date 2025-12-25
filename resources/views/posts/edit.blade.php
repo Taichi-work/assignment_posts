@@ -29,15 +29,21 @@
         <!-- タイトル -->
         <div class="flex flex-col">
             <label class="mb-2 font-semibold">タイトル</label>
-            <input type="text" name="title" value="{{ $post->title }}"
-                   class="p-3 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <input type="text" name="title" value="{{ old('title', $post->title) }}"
+                class="p-3 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            @error('title')
+                <p class="text-red-500 mt-1">{{ $message }}</p>
+            @enderror
         </div>
 
         <!-- 本文 -->
         <div class="flex flex-col">
             <label class="mb-2 font-semibold">本文</label>
             <textarea name="body" rows="5"
-                      class="p-3 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">{{ $post->body }}</textarea>
+                    class="p-3 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">{{ old('body', $post->body) }}</textarea>
+            @error('body')
+                <p class="text-red-500 mt-1">{{ $message }}</p>
+            @enderror
         </div>
 
         <!-- タグ選択 -->
@@ -45,15 +51,20 @@
             <label class="mb-2 font-semibold">タグ</label>
             <div class="flex flex-wrap gap-3">
                 @foreach ($tags as $tag)
-                    <label class="flex items-center gap-2 px-3 py-1 rounded-full
-                                  bg-indigo-500/30 hover:bg-indigo-500/50 cursor-pointer transition-all duration-300">
+                    <label class="flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/30 hover:bg-indigo-500/50 cursor-pointer transition-all duration-300">
                         <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
-                               class="accent-indigo-400"
-                               {{ $post->tags->contains($tag) ? 'checked' : '' }}>
+                            class="accent-indigo-400"
+                            {{ in_array($tag->id, old('tags', $post->tags->pluck('id')->toArray())) ? 'checked' : '' }}>
                         <span>{{ $tag->name }}</span>
                     </label>
                 @endforeach
             </div>
+            @error('tags')
+                <p class="text-red-500 mt-1">{{ $message }}</p>
+            @enderror
+            @error('tags.*')
+                <p class="text-red-500 mt-1">{{ $message }}</p>
+            @enderror
         </div>
 
         <!-- 更新ボタン -->
@@ -62,6 +73,7 @@
             更新する
         </button>
     </form>
+
 
 </div>
 
