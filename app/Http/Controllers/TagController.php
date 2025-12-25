@@ -30,6 +30,13 @@ class TagController extends Controller
         return redirect()->route('tags.index');
     }
 
+    // タグ編集画面
+    public function edit(Tag $tag)
+    {
+        // 既存タグ情報を編集画面に渡す
+        return view('tags.edit', compact('tag'));
+    }
+
     // タグ更新
     public function update(Request $request, Tag $tag)
     {
