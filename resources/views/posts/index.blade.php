@@ -67,7 +67,7 @@
                     data-title="{{ $post->title }}"
                     data-body="{{ $post->body }}"
                     data-tags='@json($post->tags->pluck("name"))'
-                    data-created-at="{{ $post->created_at->format('Y/m/d H:i') }}"
+                    data-created-at="{{ $post->created_at->timezone('Asia/Tokyo')->format('Y/m/d H:i') }}"
                     @click="openPost($el)"
                     >
                     {{ $post->title }}
