@@ -74,7 +74,7 @@
                 </h2>
 
                 <p class="text-xs text-gray-400 mb-2">
-                    {{ $post->created_at->format('Y/m/d H:i') }}
+                    {{ $post->created_at->timezone('Asia/Tokyo')->format('Y/m/d H:i') }}
                 </p>
 
                 <p
