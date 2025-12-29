@@ -130,28 +130,31 @@
     </div>
 
     <!-- ★ 投稿全文モーダル -->
-    <div x-show="showPostModal" x-transition.opacity
-         class="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
-         style="display: none;"
-         @click.self="showPostModal = false">
+    <div x-show="showPostModal"
+        x-transition.opacity
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+        style="display: none;"
+        @click.self="showPostModal = false">
 
-        <div class="bg-slate-950 max-w-2xl w-full p-6 rounded-2xl shadow-2xl relative">
-            <button @click="showPostModal = false"
-                    class="absolute top-3 right-3 text-gray-400 text-xl">×</button>
+    <div class="bg-slate-950 max-w-2xl w-full p-6 rounded-2xl shadow-2xl relative max-h-[80vh] overflow-y-auto">
 
-            <h2 class="text-2xl font-bold mb-4" x-text="modalTitle"></h2>
+        <!-- 閉じるボタン -->
+        <button @click="showPostModal = false" class="absolute top-3 right-3 text-gray-400 text-2xl hover:text-white">×</button>
 
-            <!-- タグ（モーダル用） -->
-            <div class="flex flex-wrap gap-2 mb-4">
-                <template x-for="tag in modalTags" :key="tag">
-                    <span class="text-sm px-2 py-1 rounded-full bg-indigo-500/40">
-                        #<span x-text="tag"></span>
-                    </span>
-                </template>
-            </div>
+        <!-- タイトル -->
+        <h2 class="text-2xl font-bold mb-4 break-words" x-text="modalTitle"></h2>
 
-            <p class="whitespace-pre-wrap text-gray-200" x-text="modalBody"></p>
+        <!-- タグ -->
+        <div class="flex flex-wrap gap-2 mb-4">
+            <template x-for="tag in modalTags" :key="tag">
+                <span class="text-sm px-2 py-1 rounded-full bg-indigo-500/40 break-words">
+                    #<span x-text="tag"></span>
+                </span>
+            </template>
         </div>
+
+        <!-- 本文 -->
+        <p class="text-gray-200 whitespace-pre-wrap break-words"><span x-text="modalBody"></span></p>
     </div>
 </div>
 
