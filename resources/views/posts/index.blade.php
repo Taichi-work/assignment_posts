@@ -31,12 +31,14 @@
         showPostModal: false,
         modalTitle: '',
         modalBody: '',
+        modalCreatedAt: '',
         modalTags: [],
         openPost(el) {
-        this.modalTitle = el.dataset.title
-        this.modalBody  = el.dataset.body
-        this.modalTags  = JSON.parse(el.dataset.tags)
-        this.showPostModal = true
+            this.modalTitle = el.dataset.title
+            this.modalBody  = el.dataset.body
+            this.modalTags  = JSON.parse(el.dataset.tags)
+            this.modalCreatedAt = el.dataset.createdAt
+            this.showPostModal = true
         }
     }">
 
@@ -65,10 +67,15 @@
                     data-title="{{ $post->title }}"
                     data-body="{{ $post->body }}"
                     data-tags='@json($post->tags->pluck("name"))'
+                    data-created-at="{{ $post->created_at->format('Y/m/d H:i') }}"
                     @click="openPost($el)"
                     >
                     {{ $post->title }}
                 </h2>
+
+                <p class="text-xs text-gray-400 mb-2">
+                    {{ $post->created_at->format('Y/m/d H:i') }}
+                </p>
 
                 <p
                     class="mb-3 line-clamp-3 text-gray-200 cursor-pointer break-words"
@@ -143,6 +150,9 @@
 
         <!-- タイトル -->
         <h2 class="text-2xl font-bold mb-4 break-words" x-text="modalTitle"></h2>
+
+        <!-- 日時 -->
+        <p class="text-xs text-gray-400 mb-2" x-text="modalCreatedAt"></p>
 
         <!-- タグ -->
         <div class="flex flex-wrap gap-2 mb-4">
