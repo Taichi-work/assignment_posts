@@ -8,12 +8,13 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+
     // 投稿一覧
     public function index()
     {
         $posts = Post::with('tags')->latest()->get();
         $tags = Tag::withCount('posts')->get();
-        $totalPosts = Post::count(); // 総投稿数
+        $totalPosts = Post::count();
 
         return view('posts.index', compact('posts', 'tags', 'totalPosts'));
     }
@@ -28,25 +29,27 @@ class PostController extends Controller
     // 投稿保存
     public function store(Request $request)
     {
-        // バリデーション
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'body'  => 'required|string',
-            'tags'  => 'nullable|array|max:10',       // 最大10個まで
-            'tags.*'=> 'exists:tags,id',              // 送られてきたタグIDがtagsテーブルに存在することを確認
-            // ↑ これにより不正なIDが紐付けられることを防ぎます
+        $validated = $request->validate([
+            'title' => 'required|string|max:50',
+            'body'  => 'required|string|max:500',
+            'tags'  => 'nullable|array|max:10',
+            'tags.*'=> 'exists:tags,id',
         ], [
-            'tags.max' => 'タグは10個までしか登録できません',
-            'tags.*.exists' => '選択されたタグは無効です',
+            'title.required' => 'タイトルは必須です',
+            'title.max'      => 'タイトルは50文字以内で入力してください',
+            'body.required'  => '本文は必須です',
+            'body.max'       => '本文は500文字以内で入力してください',
+            'tags.max'       => 'タグは10個までしか登録できません',
+            'tags.*.exists'  => '選択されたタグは無効です',
         ]);
 
         $post = Post::create([
-            'title' => $request->title,
-            'body'  => $request->body,
+            'title' => $validated['title'],
+            'body'  => $validated['body'],
         ]);
 
-        // タグを同期（複数）
-        $post->tags()->sync($request->tags ?? []);
+        // タグを同期（未指定時は空配列）
+        $post->tags()->sync($validated['tags'] ?? []);
 
         return redirect('/posts');
     }
@@ -61,21 +64,27 @@ class PostController extends Controller
     // 投稿更新
     public function update(Request $request, Post $post)
     {
-        // バリデーション（storeと同じルール）
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'body'  => 'required|string',
-            'tags'  => 'nullable|array|max:10',       
-            'tags.*'=> 'exists:tags,id', 
+        $validated = $request->validate([
+            'title' => 'required|string|max:50',
+            'body'  => 'required|string|max:500',
+            'tags'  => 'nullable|array|max:10',
+            'tags.*'=> 'exists:tags,id',
         ], [
-            'tags.max' => 'タグは10個までしか登録できません',
-            'tags.*.exists' => '選択されたタグは無効です',             // 各タグIDがtagsテーブルに存在することを確認
+            'title.required' => 'タイトルは必須です',
+            'title.max'      => 'タイトルは50文字以内で入力してください',
+            'body.required'  => '本文は必須です',
+            'body.max'       => '本文は500文字以内で入力してください',
+            'tags.max'       => 'タグは10個までしか登録できません',
+            'tags.*.exists'  => '選択されたタグは無効です',
         ]);
 
-        $post->update($request->only('title', 'body'));
+        $post->update([
+            'title' => $validated['title'],
+            'body'  => $validated['body'],
+        ]);
 
         // タグの同期
-        $post->tags()->sync($request->tags ?? []);
+        $post->tags()->sync($validated['tags'] ?? []);
 
         return redirect('/posts');
     }
@@ -92,7 +101,8 @@ class PostController extends Controller
     {
         $posts = $tag->posts()->with('tags')->latest()->get();
         $tags = Tag::withCount('posts')->get();
-        $totalPosts = Post::count(); // 総投稿数
+        $totalPosts = Post::count();
+
         return view('posts.index', compact('posts', 'tags', 'tag', 'totalPosts'));
     }
 
@@ -101,17 +111,18 @@ class PostController extends Controller
     {
         $keyword = $request->input('keyword');
 
-        // タイトルまたは本文に部分一致する投稿を取得
         $posts = Post::with('tags')
-            ->where('title', 'like', "%{$keyword}%")
-            ->orWhere('body', 'like', "%{$keyword}%")
+            ->where(function ($query) use ($keyword) {
+                $query->where('title', 'like', "%{$keyword}%")
+                      ->orWhere('body', 'like', "%{$keyword}%");
+            })
             ->latest()
             ->get();
 
-        // タグごとの投稿件数
         $tags = Tag::withCount('posts')->get();
+        $totalPosts = Post::count();
 
-        return view('posts.index', compact('posts', 'tags'))
+        return view('posts.index', compact('posts', 'tags', 'totalPosts'))
             ->with('keyword', $keyword);
     }
 }

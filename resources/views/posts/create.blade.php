@@ -25,7 +25,7 @@
         <!-- タイトル -->
         <div class="flex flex-col">
             <label class="mb-2 font-semibold">タイトル</label>
-            <input type="text" name="title" value="{{ old('title') }}"
+            <input type="text" name="title" value="{{ old('title') }}" maxlength="50"
                    class="p-3 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             @error('title')
                 <p class="text-red-500 mt-1">{{ $message }}</p>
@@ -35,7 +35,7 @@
         <!-- 本文 -->
         <div class="flex flex-col">
             <label class="mb-2 font-semibold">本文</label>
-            <textarea name="body" rows="5"
+            <textarea name="body" rows="5" maxlength="1000"
                       class="p-3 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">{{ old('body') }}</textarea>
             @error('body')
                 <p class="text-red-500 mt-1">{{ $message }}</p>
