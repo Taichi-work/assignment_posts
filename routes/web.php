@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/posts');
 });
 
 // 投稿一覧
