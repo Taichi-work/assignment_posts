@@ -1,59 +1,74 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 採用時持ち帰り課題
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+投稿管理アプリ(←自己紹介アプリ)
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 概要
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+シンプルな投稿管理アプリです。投稿の作成・編集・削除（CRUD）に加え、タグ付け・検索・モーダル表示など、実務を意識した機能を実装しています。
+一覧画面では投稿をカード形式で表示し、画面遷移せずに投稿全文を確認できるUXを重視しました。
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 使用技術
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+* PHP 8.x
+* Laravel 10
+* Blade
+* Alpine.js
+* Tailwind CSS
+* MySQL
+* Docker / Laravel Sail
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 環境構築・インストール方法
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+# リポジトリをクローン
+git clone https://github.com/yourname/postboard.git
+cd postboard
 
-### Premium Partners
+# 環境設定
+cp .env.example .env
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# Docker起動 & 依存関係インストール
+./vendor/bin/sail up -d
+./vendor/bin/sail composer install
 
-## Contributing
+# アプリキー生成・DB準備
+./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan migrate --seed
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+※ 上記を順に実行すれば起動できます。
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 使い方
 
-## Security Vulnerabilities
+1. `/posts` にアクセスすると投稿一覧が表示されます
+2. 右下の「＋」ボタンから新規投稿を作成できます
+3. 投稿タイトルまたは本文をクリックすると、モーダルで全文を確認できます
+4. タグをクリックすると、タグごとの投稿一覧を表示できます
+5. 検索フォームからキーワード検索が可能です
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## こだわって実装した機能
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+* **投稿全文モーダル表示**
+  Blade + Alpine.js を使い、画面遷移なしで投稿全文を確認できるUXを実装しました。
+
+* **タグ管理・タグ別表示**
+  投稿に複数タグを付与でき、タグごとの件数表示・絞り込みが可能です。
+
+* **日本時間（JST）での日時表示**
+  一覧・モーダルの両方で、サーバー側でタイムゾーンを統一して表示しています。
+
+* **検索機能の実装**
+  キーワード検索結果を明示的に表示し、ユーザーが現在の状態を把握しやすい設計にしました。
+
+* **誤操作を防ぐ削除確認モーダル**
+  投稿ごとに独立した削除モーダルを用意し、UXと安全性を考慮しています。
